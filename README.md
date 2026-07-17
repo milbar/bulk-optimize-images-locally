@@ -23,6 +23,15 @@ optimize-images photo1.jpg logo.png ./batch/*.jpg
 
 # Log skipped/error files to a file
 optimize-images --logfile errors.log ./photos/
+
+# Custom JPEG quality (1-100, default: 80)
+optimize-images --jpeg-quality 90 ./photos/
+
+# Custom PNG compression level (0-9, default: 9)
+optimize-images --png-level 6 ./photos/
+
+# Disable mozjpeg / adaptive filtering
+optimize-images --no-mozjpeg --no-adaptive-filtering ./photos/
 ```
 
 ### Example output

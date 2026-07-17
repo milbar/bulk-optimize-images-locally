@@ -12,17 +12,35 @@ let savedBytes = 0;
 let logFile = null;
 const skippedFiles = [];
 
+const defaults = {
+  jpegQuality: 80,
+  mozjpeg: true,
+  pngLevel: 9,
+  adaptiveFiltering: true,
+};
+
+let opts = { files: [], ...defaults };
+
 function parseArgs(argv) {
-  const opts = { files: [], logfile: null };
+  const result = { files: [], ...defaults, logfile: null };
   const args = argv.slice(2);
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--logfile' && args[i + 1]) {
-      opts.logfile = path.resolve(args[++i]);
+    const arg = args[i];
+    if (arg === '--logfile' && args[i + 1]) {
+      result.logfile = path.resolve(args[++i]);
+    } else if (arg === '--jpeg-quality' && args[i + 1]) {
+      result.jpegQuality = Math.min(100, Math.max(1, parseInt(args[++i], 10)));
+    } else if (arg === '--no-mozjpeg') {
+      result.mozjpeg = false;
+    } else if (arg === '--png-level' && args[i + 1]) {
+      result.pngLevel = Math.min(9, Math.max(0, parseInt(args[++i], 10)));
+    } else if (arg === '--no-adaptive-filtering') {
+      result.adaptiveFiltering = false;
     } else {
-      opts.files.push(path.resolve(args[i]));
+      result.files.push(path.resolve(arg));
     }
   }
-  return opts;
+  return result;
 }
 
 function findImages(dir) {
@@ -54,9 +72,9 @@ async function optimize(filePath) {
     }
 
     if (meta.format === 'jpeg') {
-      await image.jpeg({ quality: 80, mozjpeg: true }).toFile(temp);
+      await image.jpeg({ quality: opts.jpegQuality, mozjpeg: opts.mozjpeg }).toFile(temp);
     } else if (meta.format === 'png') {
-      await image.png({ compressionLevel: 9, adaptiveFiltering: true }).toFile(temp);
+      await image.png({ compressionLevel: opts.pngLevel, adaptiveFiltering: opts.adaptiveFiltering }).toFile(temp);
     } else {
       skipped++;
       skippedFiles.push({ file: filePath, reason: `unsupported format: ${meta.format}` });
@@ -99,7 +117,7 @@ async function runPool(items, fn, limit) {
 }
 
 async function main() {
-  const opts = parseArgs(process.argv);
+  opts = parseArgs(process.argv);
   logFile = opts.logfile;
 
   let files;
