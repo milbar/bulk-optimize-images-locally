@@ -82,6 +82,13 @@ async function optimize(filePath) {
     }
 
     const outputSize = fs.statSync(temp).size;
+
+    if (outputSize >= inputSize) {
+      fs.unlinkSync(temp);
+      skipped++;
+      return;
+    }
+
     fs.unlinkSync(filePath);
     fs.renameSync(temp, filePath);
 
