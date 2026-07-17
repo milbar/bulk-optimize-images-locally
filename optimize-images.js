@@ -82,8 +82,8 @@ async function optimize(filePath) {
     }
 
     const outputSize = fs.statSync(temp).size;
-    fs.copyFileSync(temp, filePath);
-    fs.unlinkSync(temp);
+    fs.unlinkSync(filePath);
+    fs.renameSync(temp, filePath);
 
     const saved = inputSize - outputSize;
     savedBytes += saved;
