@@ -1,0 +1,56 @@
+{
+  "name": "@milbareu/optimize-images",
+  "version": "1.0.0",
+  "description": "Bulk lossless image optimization for JPEG and PNG using sharp",
+  "homepage": "https://milbar.github.io/bulk-optimize-images-locally",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/milbar/bulk-optimize-images-locally.git"
+  },
+  "bugs": {
+    "url": "https://github.com/milbar/bulk-optimize-images-locally/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "optimize-images.js",
+  "bin": {
+    "optimize-images": "bin/optimize-images.js"
+  },
+  "files": [
+    "optimize-images.js",
+    "bin/",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node optimize-images.js",
+    "prepare": "husky",
+    "lint-staged": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": []
+  },
+  "keywords": [
+    "image",
+    "optimize",
+    "compress",
+    "jpeg",
+    "png",
+    "sharp",
+    "lossless",
+    "minify"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "sharp": "^0.33.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0"
+  }
+}

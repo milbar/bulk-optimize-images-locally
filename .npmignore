@@ -1,0 +1,8 @@
+.github/
+.idea/
+.husky/
+docs/
+AGENTS.md
+CHANGELOG.md
+.gitignore
+commitlint.config.js
