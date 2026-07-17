@@ -1,6 +1,6 @@
 {
   "name": "@milbareu/optimize-images",
-  "version": "1.1.2",
+  "version": "1.1.1",
   "description": "Bulk lossless image optimization for JPEG and PNG using sharp",
   "homepage": "https://milbar.github.io/bulk-optimize-images-locally",
   "repository": {
