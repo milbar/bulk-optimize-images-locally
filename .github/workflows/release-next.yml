@@ -18,6 +18,7 @@ jobs:
           release-type: node
           prerelease: true
           prerelease-type: beta
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
 
       - uses: actions/checkout@v4
         if: ${{ steps.release.outputs.release_created }}
