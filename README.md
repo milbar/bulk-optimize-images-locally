@@ -20,6 +20,9 @@ optimize-images
 
 # Optimize specific files
 optimize-images photo1.jpg logo.png ./batch/*.jpg
+
+# Log skipped/error files to a file
+optimize-images --logfile errors.log ./photos/
 ```
 
 ### Example output

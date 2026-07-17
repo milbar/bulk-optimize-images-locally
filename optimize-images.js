@@ -9,6 +9,21 @@ let total = 0;
 let done = 0;
 let skipped = 0;
 let savedBytes = 0;
+let logFile = null;
+const skippedFiles = [];
+
+function parseArgs(argv) {
+  const opts = { files: [], logfile: null };
+  const args = argv.slice(2);
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--logfile' && args[i + 1]) {
+      opts.logfile = path.resolve(args[++i]);
+    } else {
+      opts.files.push(path.resolve(args[i]));
+    }
+  }
+  return opts;
+}
 
 function findImages(dir) {
   const results = [];
@@ -34,6 +49,7 @@ async function optimize(filePath) {
 
     if (!meta || !meta.format) {
       skipped++;
+      skippedFiles.push({ file: filePath, reason: 'unable to read metadata' });
       return;
     }
 
@@ -43,6 +59,7 @@ async function optimize(filePath) {
       await image.png({ compressionLevel: 9, adaptiveFiltering: true }).toFile(temp);
     } else {
       skipped++;
+      skippedFiles.push({ file: filePath, reason: `unsupported format: ${meta.format}` });
       return;
     }
 
@@ -53,8 +70,9 @@ async function optimize(filePath) {
     const saved = inputSize - outputSize;
     savedBytes += saved;
     done++;
-  } catch {
+  } catch (err) {
     skipped++;
+    skippedFiles.push({ file: filePath, reason: err.message || 'unknown error' });
     const temp = filePath + '.optimize-tmp';
     if (fs.existsSync(temp)) fs.unlinkSync(temp);
   }
@@ -81,11 +99,12 @@ async function runPool(items, fn, limit) {
 }
 
 async function main() {
-  const args = process.argv.slice(2);
+  const opts = parseArgs(process.argv);
+  logFile = opts.logfile;
 
   let files;
-  if (args.length > 0) {
-    files = args.map(a => path.resolve(a));
+  if (opts.files.length > 0) {
+    files = opts.files;
     console.log(`Processing ${files.length} file(s)...`);
   } else {
     console.log('Scanning for images...');
@@ -102,6 +121,12 @@ async function main() {
 
   const elapsed = ((Date.now() - start) / 1000).toFixed(1);
   console.log(`\nDone. ${done} optimized, ${skipped} skipped, ${formatBytes(savedBytes)} saved in ${elapsed}s.`);
+
+  if (logFile && skippedFiles.length > 0) {
+    const lines = skippedFiles.map(f => `${f.file}\t${f.reason}`);
+    fs.writeFileSync(logFile, lines.join('\n') + '\n');
+    console.log(`Skipped files written to ${logFile}`);
+  }
 }
 
 if (require.main === module) {

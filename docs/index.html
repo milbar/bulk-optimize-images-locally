@@ -180,7 +180,10 @@
 optimize-images
 
 # Optimize specific files
-optimize-images photo1.jpg logo.png ./batch/*.jpg</code></pre>
+optimize-images photo1.jpg logo.png ./batch/*.jpg
+
+# Log skipped/error files to a file
+optimize-images --logfile errors.log ./photos/</code></pre>
 
     <h2>Example output</h2>
     <pre><code><span class="output">Found 42 images.
