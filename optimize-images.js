@@ -126,7 +126,7 @@ async function main() {
     console.log(`Processing ${files.length} file(s)...`);
   } else {
     console.log('Scanning for images...');
-    const dir = __dirname;
+    const dir = process.cwd();
     files = findImages(dir);
     console.log(`Found ${files.length} images.`);
   }
